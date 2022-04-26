@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:yh="http://www.thymeleaf/org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+<title>ECサイト</title>
+<script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="/js/common.js" th:src='@{/js/common.js}'></script>
+	<!--jQueryより後に↑の別jsファイルを読み込む-->
+	
+<script>
+let cartList = [];//カート情報を一覧形式でメモリ上に保持しておくための変数を定義
+
+$(() => {
+	$('#loginForm').on('submit',login);
+	//「loginForm」のidを持つ要素でsubmitイベントが発生した際にloginを呼び出すようリスナー登録している
+	
+	$('.cartBtn').on('click',addCart);
+	//cartBtnのclassを持つ要素で、clickが発生した際にaddCartを呼び出すようリスナー登録している
+	
+	$('#buyBtn').on('click',buy);
+	//buyBtnのclassを持つ要素で、clickが発生した際にbuyを呼び出すようリスナー登録している
+	
+	$('#historyBtn').on('click',showHistory);
+	
+	$("#history").dialog({
+		autoOpen:false,
+		width:550,
+		modal:true,
+		buttons:[
+		{
+			text:'OK',
+			click:function(){
+				$(this).dialog("close");
+			}
+		},]
+	});//jquery-uiのモータルダイアログ設定
+});
+</script>>
+
+</head>
+<body>
+<header>
+	<h1>My EC Site</h1>
+	<div>
+		<form name="loginForm" method="POST" id="loginForm" action="#">
+			User name:<input type="text" name="userName"/>
+			Password :<input type="password" name="password"/>
+			<button type="submit">Login</button>
+		</form>
+		<br />
+		<span id="welcome"> -- ようこそ！ ゲスト さん</span>
+		<input type="hidden" id="hiddenUserId" value="0"/>
+	</div>
+</header>
+
+<table>
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>商品名</th>
+			<th>価格</th>
+			<th>注文数</th>
+			<th>カート</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr th:each="item:${goods}">
+			<td th:text="${item.id}"/>
+			<td th:text="${item.goodsName}"/>
+			<td th:text="${item.price}"/>
+			<td><input type="number" class="count" value="0"></td>
+			<td><button class="cartBtn">カートに入れる</button></td>
+		</tr>
+		<!--
+		Thymeleafを使用したループ処理。cntrollerで
+		Modelオブジェクトに追加されたキーで取得した値
+		（今回はListコレクション）をループさせている
+		-->
+	</tbody>
+</table>
+
+<fieldset>
+	<legend>カート</legend>
+	<table id="cart">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>商品名</th>
+				<th>価格</th>
+				<th>注文数</th>
+				<th>カート</th>
+			</tr>
+		</thead>
+		<tbody>
+		
+		<!--あとでajaxを用いて動的にテーブル行を作成する。-->
+		
+		</tbody>
+	</table>
+	<button id="buyBtn">購入</button>
+	<button id="historyBtn">履歴</button>
+</fieldset>
+
+<div id="history" title="購入履歴" style="display:none;">
+	<!--divで囲まれた要素は。初期表示時に非表示になるようスタイル定義している-->	
+	<table id="historyTable">
+		<thead>
+			<tr>
+				<th>商品名</th>
+				<th>注文数</th>
+				<th>購入日時</th>
+			</tr>
+		</thead>
+		<tbody>
+		
+		<!--あとでajaxを用いて動的にテーブル行を作成する。-->
+		
+		</tbody>
+		
+	</table>
+</div>
+
+</body>
+</html>
